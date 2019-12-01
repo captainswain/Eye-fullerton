@@ -1,0 +1,18 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+tensorflow = "*"
+matplotlib = "*"
+pillow = "*"
+tensorflow-hub = "*"
+scipy = "*"
+flask = "*"
+flask-api = "*"
+
+[requires]
+python_version = "3.6.5"
