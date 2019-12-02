@@ -1,6 +1,5 @@
 import tensorflow as tf
 import tensorflow_hub as hub
-import matplotlib.pylab as plt
 from tensorflow.keras import layers
 import sys
 

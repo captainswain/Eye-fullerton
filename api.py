@@ -39,7 +39,7 @@ def home():
 @app.route('/upload', methods=['POST'])
 def post():
 
-    imagefile = request.files.get('imagefile', '')
+    imagefile = request.files.get('building', '')
 
     if not is_allowed_file(imagefile.filename):
         return {'error' : 'Invalid'}, 404
