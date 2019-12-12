@@ -7,23 +7,25 @@ import tensorflow as tf
 import tensorflow_hub as hub
 import PIL.Image as Image
 from werkzeug.utils import secure_filename
-import numpy as np
+import numpy as numpy
 import os
 
     
 
-
-UPLOAD_FOLDER = './uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
 IMAGE_SHAPE = (224, 224)
+
+# list of buildings
 buildings = ["Education Building", "Engineering Building", "Pollack Library North"]
 model_path = "./model_new/buildings_augmented"
+
+# Load stored model
 model = tf.keras.models.load_model(model_path)
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
+# This file check is from flask documentation
 def is_allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -46,18 +48,20 @@ def post():
 
     filename = secure_filename(imagefile.filename)
 
-    imagefile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    imagefile.save(os.path.join('./uploads', filename))
 
-    uploadedImage = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    uploadedImage = os.path.join('./uploads', filename)
 
     buildingImage = Image.open(uploadedImage).resize(IMAGE_SHAPE)
     
-    buildingImage = np.array(buildingImage)/255.0
+    buildingImage = numpy.array(buildingImage)/255.0
 
-    result = model.predict(buildingImage[np.newaxis, ...])
+    result = model.predict(buildingImage[numpy.newaxis, ...])
 
-    prediction = np.argmax(result[0], axis=-1)
+    # get prediction by the indice of the maximum values along an axis.
+    prediction = numpy.argmax(result[0], axis=-1)
 
+    # Return prediction, accuracy, and building name
     return {'id': str(prediction), 'accuracy' : str(result[0][prediction]), 'building' : buildings[prediction] }, 200
 
 
@@ -66,5 +70,5 @@ def post():
 
 
 if __name__ == "__main__":
-    # Working on a ubuntu VM that isn't accesible on localhost.
+    # start Api on port 1337
     app.run(debug=True, host="0.0.0.0", port=1337)
